@@ -12,7 +12,7 @@ EXPOSE 7777
 
 # 如果arg server_ip不为空，则替换配置文件中的server_ip
 ARG SERVER_IP
-ENV SERVER_IP = ${SERVER_IP}
+ENV SERVER_IP=${SERVER_IP}
 # 运行env.py传递参数
 #RUN python3 env.py $SERVER_IP
 
