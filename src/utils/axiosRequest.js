@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 // const URL = 'http://localhost:8080';
-const URL = 'http://127.0.0.1:8080';
+// const URL = 'http://127.0.0.1:8080';
+import {my_ipConfig} from '../ipconfig' 
+const URL = my_ipConfig.backendUrl;
+
 var RequestEnums;
 (function (RequestEnums) {
     RequestEnums[RequestEnums["TIMEOUT"] = 200000] = "TIMEOUT";
