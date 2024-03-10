@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-// const URL = 'http://=:8080';
-const URL = 'http://=:8080';
+// const URL = 'http://localhost:8080';
+const URL = 'http://127.0.0.1:8080';
 var RequestEnums;
 (function (RequestEnums) {
     RequestEnums[RequestEnums["TIMEOUT"] = 200000] = "TIMEOUT";

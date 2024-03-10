@@ -11,7 +11,7 @@
         <transition name="expand">
           <div>
             <div v-show="!isExpanded">
-              召唤 Copilot mmm
+              召唤 Copilot help me
               <button @click="expand">^</button>
             </div>
             <div v-show="isExpanded">
@@ -96,7 +96,7 @@ loadingInstance0.close()
 // 文件导入
 window.addEventListener('message', function(event) {
   // 检查消息来源
-  if (event.origin !== 'http://=:9529') return
+  if (event.origin !== 'http://localhost:9529') return
   const loadingInstance = ElLoading.service({
     lock: true,
     text: '正在导入...',
