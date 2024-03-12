@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
+import { my_ipConfig } from '../ipconfig'
 
 // 数据返回的接口
 // 定义请求响应参数，不含data
@@ -13,8 +14,10 @@ interface ResultData<T> extends Result {
   data?: T;
 }
 
-// const URL = 'http://=:8080'
-const URL = 'http://localhost:8080'
+
+// const URL = 'http://localhost:8080'
+const URL = my_ipConfig.backendUrl
+
 enum RequestEnums {
   TIMEOUT = 200000, // 超时时间，要设置的很大！！
   OVERDUE = 600, // 登录失效

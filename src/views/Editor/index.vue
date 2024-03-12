@@ -77,12 +77,13 @@ useGlobalHotkey()
 usePasteEvent()
 import useImport from '@/hooks/useImport'
 import { encrypt } from '@/utils/crypto'
+import {my_ipConfig} from '../../ipconfig' 
 const { importSpecificFile } = useImport()
 loadingInstance0.close()
 // 文件导入
 window.addEventListener('message', function(event) {
   // 检查消息来源
-  if (event.origin !== 'http://localhost:9529') return
+  if (event.origin !== my_ipConfig.projectUrl) return
   const loadingInstance = ElLoading.service({
     lock: true,
     text: '正在导入...',
