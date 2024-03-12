@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 // 数据返回的接口
@@ -13,8 +13,8 @@ interface ResultData<T> extends Result {
   data?: T;
 }
 
-const URL = 'http://=:8080'
-// const URL = 'http://localhost:8080'
+// const URL = 'http://=:8080'
+const URL = 'http://localhost:8080'
 enum RequestEnums {
   TIMEOUT = 200000, // 超时时间，要设置的很大！！
   OVERDUE = 600, // 登录失效
@@ -112,7 +112,7 @@ class RequestHttp {
 
   // 常用方法封装
   get<T>(url: string, params?: object): Promise<ResultData<T>> {
-    return this.service.get(url, {params})
+    return this.service.get(url, { params })
   }
   post<T>(url: string, params?: object): Promise<ResultData<T>> {
     return this.service.post(url, params)
@@ -121,7 +121,7 @@ class RequestHttp {
     return this.service.put(url, params)
   }
   delete<T>(url: string, params?: object): Promise<ResultData<T>> {
-    return this.service.delete(url, {params})
+    return this.service.delete(url, { params })
   }
 }
 

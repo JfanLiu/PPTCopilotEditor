@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 // const URL = 'http://=:8080';
-const URL = 'http://=:8080';
+const URL = 'http://localhost:8080';
 var RequestEnums;
 (function (RequestEnums) {
     RequestEnums[RequestEnums["TIMEOUT"] = 200000] = "TIMEOUT";
@@ -33,7 +33,7 @@ class RequestHttp {
             return {
                 ...config,
                 headers: {
-                // 'x-access-token': token, // 请求头中携带token信息
+                    // 'x-access-token': token, // 请求头中携带token信息
                 }
             };
         }, (error) => {
