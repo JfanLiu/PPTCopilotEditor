@@ -3,7 +3,7 @@
     <div>
       <div v-show="!isExpanded">
         <div class="chat-box-top">
-          <el-tag>召唤 Copilot</el-tag>
+          <el-tag class="chat-box-prompt">召唤 Copilot</el-tag>
           <el-button circle type="primary" @click="expand">
             <!-- 上升图标 -->
             <ArrowUp />
@@ -12,7 +12,7 @@
       </div>
       <div v-show="isExpanded">
         <div class="chat-box-top">
-          <el-tag>返回</el-tag>
+          <el-tag class="chat-box-prompt">返回</el-tag>
           <el-button circle type="primary" @click="shrink">
             <!-- 下降图标 -->
             <ArrowDown />
@@ -52,7 +52,10 @@ export default {
   align-items: center;
 }
 
-.el-tag {
+.chat-box-prompt {
+  background-color: #409eff;
+  color: #fff;
+
   font-size: 100%;
   margin-right: 10px;
   margin-left: 10px;
