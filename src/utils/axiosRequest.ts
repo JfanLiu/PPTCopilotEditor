@@ -1,6 +1,6 @@
-import axios, {AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
-import {my_ipConfig} from '../ipconfig' 
+import { my_ipConfig } from '../ipconfig'
 
 // 数据返回的接口
 // 定义请求响应参数，不含data
@@ -115,7 +115,7 @@ class RequestHttp {
 
   // 常用方法封装
   get<T>(url: string, params?: object): Promise<ResultData<T>> {
-    return this.service.get(url, {params})
+    return this.service.get(url, { params })
   }
   post<T>(url: string, params?: object): Promise<ResultData<T>> {
     return this.service.post(url, params)
@@ -124,7 +124,7 @@ class RequestHttp {
     return this.service.put(url, params)
   }
   delete<T>(url: string, params?: object): Promise<ResultData<T>> {
-    return this.service.delete(url, {params})
+    return this.service.delete(url, { params })
   }
 }
 

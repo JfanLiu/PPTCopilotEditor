@@ -8,25 +8,10 @@
 
         <Canvas class="center-body animated-div"
           :style="{ height: `calc(100% - ${remarkHeight + 40}px)`, transition: 'height 0.5s ease' }" />
-        <transition name="expand">
-          <div>
-            <div v-show="!isExpanded">
-              召唤 Copilot help me
-              <button @click="expand">^</button>
-            </div>
-            <div v-show="isExpanded">
-              返回
-              <button @click="shrink">v</button>
-              <ChatBox height="480" />
-            </div>
-          </div>
-        </transition>
+        <Assistant :isExpanded="isExpanded" :expand="expand" :shrink="shrink" />
       </div>
-
       <Toolbar class="layout-content-right" />
-
     </div>
-
   </div>
 
   <SelectPanel v-if="showSelectPanel" />
@@ -52,6 +37,7 @@ import Toolbar from './Toolbar/index.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import SelectPanel from './SelectPanel.vue'
 import { Modal } from 'ant-design-vue'
+import Assistant from './Assistant/index.vue'
 import ChatBox from '@/components/ChatBox.vue'
 
 import { ElLoading, ElMessageBox } from 'element-plus'

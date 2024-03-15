@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 // const URL = 'http://localhost:8080';
 // const URL = 'http://127.0.0.1:8080';
-import {my_ipConfig} from '../ipconfig' 
+import { my_ipConfig } from '../ipconfig'
 const URL = my_ipConfig.backendUrl;
 
 var RequestEnums;
@@ -36,7 +36,7 @@ class RequestHttp {
             return {
                 ...config,
                 headers: {
-                // 'x-access-token': token, // 请求头中携带token信息
+                    // 'x-access-token': token, // 请求头中携带token信息
                 }
             };
         }, (error) => {
