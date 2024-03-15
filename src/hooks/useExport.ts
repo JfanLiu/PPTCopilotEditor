@@ -13,6 +13,7 @@ import { SvgPoints, toPoints } from '@/utils/svgPathParser'
 import { encrypt } from '@/utils/crypto'
 import { svg2Base64 } from '@/utils/svg2Base64'
 import { message } from 'ant-design-vue'
+import {my_ipConfig} from '../ipconfig' 
 
 const INCH_PX_RATIO = 100
 const PT_PX_RATIO = 0.75
@@ -56,7 +57,16 @@ export default () => {
   }
 
   const saveToCloud = (_slides: Slide[]) => {
-    window.parent.postMessage(JSON.stringify(_slides), '*')
+    // window.parent.postMessage(JSON.stringify(_slides), '*')
+    // window.parent.postMessage(JSON.stringify(_slides), my_ipConfig.projectUrl)
+    // 向父页面发送消息
+    if (window.parent) {
+      window.parent.postMessage(JSON.stringify(_slides), my_ipConfig.projectUrl)
+    } 
+    else {
+      console.error('Failed to find the parent window for message posting.')
+    }
+    console.log('7777post2')
   }
 
   // 导出JSON文件

@@ -59,10 +59,16 @@ import { Slide } from '@/types/slides'
 import useGenPPTByOutline from '@/hooks/useGenPPTByOutline'
 import RequestHttp from '@/utils/axiosRequest'
 import { guide_slide } from '@/api/ppt_Request_gpt'
-const loadingInstance0 = ElLoading.service({
-  text: '正在启动PPT编辑系统...',
+// const loadingInstance0 = ElLoading.service({
+//   text: '正在启动PPT编辑系统...',
+//   spinner: 'el-icon-loading',
+//   background: 'rgba(0, 0, 0, 0.3)'
+// })
+const loadingInstance = ElLoading.service({
+  lock: true,
+  text: '正在导入...',
   spinner: 'el-icon-loading',
-  background: 'rgba(0, 0, 0, 0.3)'
+  background: 'rgba(0, 0, 0, 0.7)'
 })
 
 const mainStore = useMainStore()
@@ -93,33 +99,41 @@ import useImport from '@/hooks/useImport'
 import { encrypt } from '@/utils/crypto'
 import {my_ipConfig} from '../../ipconfig' 
 const { importSpecificFile } = useImport()
-loadingInstance0.close()
+// loadingInstance0.close()
 // 文件导入
-window.addEventListener('message', function(event) {
-  // 检查消息来源
-  if (event.origin !== my_ipConfig.projectUrl) return
-  const loadingInstance = ElLoading.service({
-    lock: true,
-    text: '正在导入...',
-    spinner: 'el-icon-loading',
-    background: 'rgba(0, 0, 0, 0.7)'
-  })
-  // 输出或处理接收到的消息
-  const data: string = event.data // 虽然定义成string，实际会被自动转为json obj
-  console.log(typeof data)
-  const blob = new Blob([encrypt(JSON.stringify(data))], { type: '*' })
-  console.log('7777 length: ', data.length)
-  // 将 Blob 对象转换为 File 对象
-  const file = new File([blob], 'test.json')
-  // 创建 DataTransfer 对象
-  const dataTransfer = new DataTransfer()
-  // 将 File 对象添加到 DataTransfer 对象
-  dataTransfer.items.add(file)
-  // 从 DataTransfer 对象获取 FileList 对象
-  const fileList = dataTransfer.files
-  importSpecificFile(fileList, true)
-  loadingInstance.close()
-}, false)
+if (window.self !== window.top) {
+  // 在 iframe 中加载的情况下，添加消息监听器
+  window.addEventListener('message', function(event) {
+    // 检查消息来源
+    if (event.origin !== my_ipConfig.projectUrl) return
+    // const loadingInstance = ElLoading.service({
+    //   lock: true,
+    //   text: '正在导入...',
+    //   spinner: 'el-icon-loading',
+    //   background: 'rgba(0, 0, 0, 0.7)'
+    // })
+    // 输出或处理接收到的消息
+    const data: string = event.data // 虽然定义成string，实际会被自动转为json obj
+    console.log(typeof data)
+    const blob = new Blob([encrypt(JSON.stringify(data))], { type: '*' })
+    console.log('7777 length: ', data.length)
+    // 将 Blob 对象转换为 File 对象
+    const file = new File([blob], 'test.json')
+    // 创建 DataTransfer 对象
+    const dataTransfer = new DataTransfer()
+    // 将 File 对象添加到 DataTransfer 对象
+    dataTransfer.items.add(file)
+    // 从 DataTransfer 对象获取 FileList 对象
+    const fileList = dataTransfer.files
+    importSpecificFile(fileList, true)
+    loadingInstance.close()
+  }, false) 
+}
+else {
+  // 如果当前页面不在 iframe 中加载，重定向到网页A
+  window.location.href = my_ipConfig.projectUrl
+}
+
 
 </script>
 
