@@ -8,9 +8,11 @@
             {{ message.content }}
           </el-tag>
 
-          <el-tag type="info" class="chat-box-message-time">
-            {{ message.time }}
-          </el-tag>
+          <div class="chat-box-message-time">
+            <el-tag type="info">
+              {{ message.time }}
+            </el-tag>
+          </div>
         </div>
 
       </el-scrollbar>
@@ -19,13 +21,18 @@
     <div class="chat-box-input">
       <el-input v-model="message" placeholder="请输入对话内容" @keyup.enter="submitMessage()" clearable></el-input>
       <el-button type="primary" @click="submitMessage">发送</el-button>
+      <el-loading :visible="loading" :full-screen="true" :text="loadingText" :background="loadingBackground" v-if="loading">
+        <div style="padding: 20px; text-align: center;">
+          <span>加载中...</span>
+        </div>
+      </el-loading>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, ref, onMounted} from 'vue'
-import {ElInput, ElButton, ElCard, ElScrollbar, ElTag} from 'element-plus'
+import {ElInput, ElButton, ElCard, ElScrollbar, ElTag, ElLoading} from 'element-plus'
 import {useSlidesStore} from '@/store'
 import {storeToRefs} from 'pinia'
 
@@ -41,7 +48,8 @@ export default defineComponent({
     ElButton,
     ElCard,
     ElScrollbar,
-    ElTag
+    ElTag,
+    ElLoading
   },
   props: {
     height: {
@@ -50,6 +58,10 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const loading = ref(true)
+    const loadingText = ref('Loading...')
+    const loadingBackground = ref('rgba(255, 255, 255, 0.7)') // 加载动画的背景色
+
     const chatHistory = ref<ChatHistoryItem[]>([])
     const message = ref('')
 
@@ -65,15 +77,18 @@ export default defineComponent({
           time: currentTime,
           content: message.value,
         })
-        console.log(currentTime)
-        console.log('log info:')
-        for (const msg of chatHistory.value) {
-          console.log(msg)
-        }
+        // console.log(currentTime)
+        // console.log('log info:')
+        // for (const msg of chatHistory.value) {
+        //   console.log(msg)
+        // }
 
-        console.log(chatHistory)
+        // console.log(chatHistory)
         message.value = ''
+        loading.value = true
+        console.log('loading')
         slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content)
+        // loading.value = false
         scrollToBottom()
       }
     }
@@ -93,6 +108,9 @@ export default defineComponent({
       chatHistory,
       message,
       submitMessage,
+      loading,
+      loadingText,
+      loadingBackground
     }
   },
 })
