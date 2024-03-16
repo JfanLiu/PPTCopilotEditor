@@ -194,7 +194,7 @@ export const useSlidesStore = defineStore('slides', {
     },
 
 
-    request_update_slides(prompt: string): void {
+    request_update_slides(prompt: string) {
       const update_slides_requset: UpdateSlidesRequest = {
         'prompt': '',
         'slide': '',
@@ -224,7 +224,7 @@ export const useSlidesStore = defineStore('slides', {
       // }
       // this.slides[this.slideIndex] = res_slides[0]
 
-      update_slides(update_slides_requset).then((response) => {
+      return update_slides(update_slides_requset).then((response) => {
         console.log('response:', JSON.stringify(response, null, 2))
         const data = JSON.parse(JSON.stringify(response, null, 2))['data'] as string
         if (data) {

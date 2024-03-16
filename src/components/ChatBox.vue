@@ -4,13 +4,13 @@
       <el-scrollbar wrap-class="chat-box-scrollbar-wrap">
         <!-- 聊天记录列表 -->
         <div class="chat-box-message" v-for="(message, index) in chatHistory" :key="index">
-          <el-tag class="chat-box-message-content">
-            {{ message.content }}
-          </el-tag>
+          <div :class="{ 'latest-message' : index == (chatHistory.length - 1)}">
+            <el-tag class="chat-box-message-content">
+              {{ message.content }}
+            </el-tag>
 
-          <div class="chat-box-message-time">
-            <el-tag type="info">
-              {{ message.time }}
+            <el-tag class="chat-box-message-time" type="info">
+                {{ message.time }}
             </el-tag>
           </div>
         </div>
@@ -21,11 +21,6 @@
     <div class="chat-box-input">
       <el-input v-model="message" placeholder="请输入对话内容" @keyup.enter="submitMessage()" clearable></el-input>
       <el-button type="primary" @click="submitMessage">发送</el-button>
-      <el-loading :visible="loading" :full-screen="true" :text="loadingText" :background="loadingBackground" v-if="loading">
-        <div style="padding: 20px; text-align: center;">
-          <span>加载中...</span>
-        </div>
-      </el-loading>
     </div>
   </div>
 </template>
@@ -39,6 +34,7 @@ import {storeToRefs} from 'pinia'
 interface ChatHistoryItem {
   time: string;
   content: string;
+  success: boolean;
 }
 
 export default defineComponent({
@@ -48,8 +44,7 @@ export default defineComponent({
     ElButton,
     ElCard,
     ElScrollbar,
-    ElTag,
-    ElLoading
+    ElTag
   },
   props: {
     height: {
@@ -58,9 +53,17 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const loading = ref(true)
-    const loadingText = ref('Loading...')
-    const loadingBackground = ref('rgba(255, 255, 255, 0.7)') // 加载动画的背景色
+    const loading = ref(false)
+    // const svg = `
+    //     <path class="path" d="
+    //       M 30 15
+    //       L 28 17
+    //       M 25.61 25.61
+    //       A 15 15, 0, 0, 1, 15 30
+    //       A 15 15, 0, 1, 1, 27.99 7.5
+    //       L 15 15
+    //     " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
+    //   `
 
     const chatHistory = ref<ChatHistoryItem[]>([])
     const message = ref('')
@@ -70,25 +73,40 @@ export default defineComponent({
 
     // slidesStore.request_update_slides('请帮我把这个ppt修改为论语主题')
 
-    const submitMessage = () => {
+    const submitMessage = async () => {
+      // 加载时禁止发送信息
+      if (loading.value) {
+        return
+      }
+
+      // 确保发送的信息不为空
       if (message.value) {
         const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         chatHistory.value.push({
           time: currentTime,
           content: message.value,
+          success: true
         })
-        // console.log(currentTime)
-        // console.log('log info:')
-        // for (const msg of chatHistory.value) {
-        //   console.log(msg)
-        // }
 
-        // console.log(chatHistory)
+        // 信息清零
         message.value = ''
+
+        // 保证DOM更新后再加载Loading动画
+        await Promise.resolve()
+
         loading.value = true
-        console.log('loading')
-        slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content)
-        // loading.value = false
+        const loadingInstance = ElLoading.service({
+          target: '.latest-message',
+          fullscreen: false,
+          // text: 'Loading...',
+          // spinner: svg,
+          background: 'rgba(255, 255, 255, 0.5)'
+        })
+
+        slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+          loading.value = false
+          loadingInstance.close()
+        })
         scrollToBottom()
       }
     }
@@ -107,16 +125,17 @@ export default defineComponent({
     return {
       chatHistory,
       message,
-      submitMessage,
-      loading,
-      loadingText,
-      loadingBackground
+      submitMessage
     }
   },
 })
 </script>
 
 <style scoped>
+.example-showcase .el-loading-mask {
+  z-index: 9;
+}
+
 .chat-box {
   display: flex;
   flex-direction: column;
@@ -143,6 +162,13 @@ export default defineComponent({
   content: "";
   display: table;
   clear: both;
+}
+
+.chat-box-loading {
+  display: inline;
+  height: 100%;
+  color: pink;
+  aspect-ratio: 1;
 }
 
 .chat-box-message-content {
