@@ -74,6 +74,7 @@ const selectedSlides = computed(() => {
 const showMessage = ref(false)
 
 const pushSaveBtnHandler = () => {
+  console.log(selectedSlides.value)
   saveToCloud(selectedSlides.value)
   showMessage.value = true
   // 暂停
