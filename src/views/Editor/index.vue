@@ -91,6 +91,9 @@ if (window.self !== window.top) {
   // 在 iframe 中加载的情况下，添加消息监听器
   window.addEventListener('message', function(event) {
     // 检查消息来源
+    console.log('收message')
+    console.log(event.origin)
+    console.log(my_ipConfig.projectUrl)
     if (event.origin !== my_ipConfig.projectUrl) return
     // const loadingInstance = ElLoading.service({
     //   lock: true,

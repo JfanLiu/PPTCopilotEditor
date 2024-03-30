@@ -1,7 +1,7 @@
 // config.ts
 
 export const my_ipConfig = {
-  backendUrl: 'http://localhost:8080',
-  projectUrl: 'http://localhost:9529'
+  backendUrl: 'http://127.0.0.1:8080',
+  projectUrl: 'http://127.0.0.1:9529'
 }
   
