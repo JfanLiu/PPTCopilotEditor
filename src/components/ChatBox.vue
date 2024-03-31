@@ -103,7 +103,11 @@ export default defineComponent({
           background: 'rgba(255, 255, 255, 0.5)'
         })
 
-        slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        // slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        //   loading.value = false
+        //   loadingInstance.close()
+        // })
+        slidesStore.request_update_style(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
           loading.value = false
           loadingInstance.close()
         })

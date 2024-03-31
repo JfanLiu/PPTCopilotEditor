@@ -5,7 +5,7 @@ import { Slide, SlideTheme, PPTElement, PPTAnimation, PPTTextElement } from '@/t
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
-import { update_slides, UpdateSlidesRequest } from '@/api/ppt_Request_gpt'
+import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
 
@@ -172,9 +172,9 @@ export const useSlidesStore = defineStore('slides', {
     updateElement(data: UpdateElementData) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
-      console.log('this.slides')
-      console.log(this.slides[this.slideIndex])
-      console.log(this.slides[this.slideIndex].elements)
+      // console.log('this.slides')
+      // console.log(this.slides[this.slideIndex])
+      // console.log(this.slides[this.slideIndex].elements)
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map(el => {
@@ -261,7 +261,50 @@ export const useSlidesStore = defineStore('slides', {
 
     },
 
-    
+    request_update_style(prompt: string) {
+      const update_style_requset: UpdateStyleRequest = {
+        'prompt': '',
+        'slide': [],
+      }
+      update_style_requset['prompt'] = prompt
+      const target_slides = this.slides[this.slideIndex]
+      const elements = target_slides.elements // 引用传值
+
+      console.log('slides.ts中的update_style')
+
+      for (let j = 0; j < elements.length; j++) {
+        console.log(elements[j].type)
+        if (elements[j].type === 'text') {
+          const textElement = elements[j] as PPTTextElement
+          // console.log(JSON.stringify(textElement))
+          const slideElement = { id: textElement.id, content: textElement.content }
+          update_style_requset.slide.push(slideElement)
+        }
+      }
+
+      console.log(update_style_requset)
+
+      return update_styles(update_style_requset).then((response) => {
+        console.log(response)
+        const data = JSON.parse(JSON.stringify(response, null, 2))['data']
+        console.log(data)
+
+        // 现在 jsonArray 是一个包含了多个对象的数组，你可以通过遍历访问每个对象的属性
+        data.forEach((item:{ id: string, content: string }) => {
+          console.log('ID:', item.id)
+          console.log('Content:', item.content)
+
+          const elementId = item.id
+          const updatedProps: Partial<PPTElement> = {
+            content: item.content,
+          }
+          this.updateElement({ id: elementId, props: updatedProps })
+        })
+
+      }).catch(error => {
+        console.error('An error occurred:', error)
+      })
+    }
 
   },
 })
