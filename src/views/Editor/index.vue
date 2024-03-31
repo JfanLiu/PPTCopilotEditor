@@ -104,6 +104,7 @@ if (window.self !== window.top) {
     // 输出或处理接收到的消息
     const data: string = event.data // 虽然定义成string，实际会被自动转为json obj
     console.log(typeof data)
+    console.log(data)
     const blob = new Blob([encrypt(JSON.stringify(data))], { type: '*' })
     console.log('7777 length: ', data.length)
     // 将 Blob 对象转换为 File 对象
@@ -114,6 +115,7 @@ if (window.self !== window.top) {
     dataTransfer.items.add(file)
     // 从 DataTransfer 对象获取 FileList 对象
     const fileList = dataTransfer.files
+    console.log(fileList)
     importSpecificFile(fileList, true)
     loadingInstance.close()
   }, false) 

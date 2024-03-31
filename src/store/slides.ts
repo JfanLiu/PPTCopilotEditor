@@ -172,7 +172,9 @@ export const useSlidesStore = defineStore('slides', {
     updateElement(data: UpdateElementData) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
-
+      console.log('this.slides')
+      console.log(this.slides[this.slideIndex])
+      console.log(this.slides[this.slideIndex].elements)
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map(el => {
@@ -205,15 +207,17 @@ export const useSlidesStore = defineStore('slides', {
 
       // const dom_top = convert_slides_to_dom(target_slides)
       const dom_top = convert_slide_to_dom(target_slides)
+      console.log('显示Slide')
+      console.log(target_slides)
       update_slides_requset['slide'] = dom_top.outerHTML
 
       let receive_xml = `
       <slides>
-  <slide id="test-slide-1">
-    <p id="idn7Mx">论语</p>
-    <p id="7stmVP">有朋自远方来，不亦乐乎。</p>
-  </slide>
-</slides>
+        <slide id="test-slide-1">
+          <p id="idn7Mx">论语</p>
+          <p id="7stmVP">有朋自远方来，不亦乐乎。</p>
+        </slide>
+      </slides>
 `
       console.log('要修改的页面和命令：')
       console.log(JSON.stringify(update_slides_requset, null, 2))
@@ -256,6 +260,8 @@ export const useSlidesStore = defineStore('slides', {
       })
 
     },
+
+    
 
   },
 })

@@ -171,7 +171,8 @@ const updateContent = (content: string) => {
     id: props.elementInfo.id,
     props: { content },
   })
-  
+  // console.log('contentEL')
+  // console.log(content)
   addHistorySnapshot()
 }
 
