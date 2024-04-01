@@ -1,4 +1,4 @@
-import { Slide, PPTTextElement} from '@/types/slides'
+import { Slide, PPTTextElement } from '@/types/slides'
 import { cloneDeep } from 'lodash'
 
 export default () => {
@@ -69,11 +69,11 @@ export default () => {
                 const inner_textElement = inner_slide.elements[element_index] as PPTTextElement
                 const inner_textElement_xml_dom = parser.parseFromString(inner_textElement.content, 'application/xml')
 
-                console.log('origin xml:', inner_textElement_xml_dom.documentElement.outerHTML)
-                console.log('target txt:', p.textContent)
+                // console.log('origin xml:', inner_textElement_xml_dom.documentElement.outerHTML)
+                // console.log('target txt:', p.textContent)
 
                 changeText(inner_textElement_xml_dom.documentElement, p.textContent as string)
-                console.log('最终结果', inner_textElement_xml_dom.documentElement.outerHTML)
+                // console.log('最终结果', inner_textElement_xml_dom.documentElement.outerHTML)
 
                 inner_textElement.content = inner_textElement_xml_dom.documentElement.outerHTML
               }

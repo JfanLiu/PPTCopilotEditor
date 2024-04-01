@@ -8,6 +8,7 @@ import { layouts } from '@/mocks/layout'
 import { update_slides, UpdateSlidesRequest } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
+import axiosRequest from '@/utils/axiosRequest'
 
 const { convert_slide_to_dom, convert_slides_to_dom } = useSlide2Dom()
 const { update_xml_to_dom_to_slide } = useXml2Slide()
@@ -193,19 +194,26 @@ export const useSlidesStore = defineStore('slides', {
       this.slides[slideIndex].elements = (elements as PPTElement[])
     },
 
+    request_workflow(prompt: string) {
+      const a = 1
+    },
+
+    request_task(task: object) {
+      const a = 1
+    },
 
     request_update_slides(prompt: string) {
-      const update_slides_requset: UpdateSlidesRequest = {
+      const update_slides_request: UpdateSlidesRequest = {
         'prompt': '',
         'slide': '',
       }
-      update_slides_requset['prompt'] = prompt
+      update_slides_request['prompt'] = prompt
 
       const target_slides = this.slides[this.slideIndex]
 
       // const dom_top = convert_slides_to_dom(target_slides)
       const dom_top = convert_slide_to_dom(target_slides)
-      update_slides_requset['slide'] = dom_top.outerHTML
+      update_slides_request['slide'] = dom_top.outerHTML
 
       let receive_xml = `
       <slides>
@@ -216,7 +224,7 @@ export const useSlidesStore = defineStore('slides', {
 </slides>
 `
       console.log('要修改的页面和命令：')
-      console.log(JSON.stringify(update_slides_requset, null, 2))
+      console.log(JSON.stringify(update_slides_request, null, 2))
 
       // const res_slides = update_xml_to_dom_to_slide(receive_xml, target_slides)
       // for (let i = 0; i < res_slides.length; i++) {
@@ -224,7 +232,7 @@ export const useSlidesStore = defineStore('slides', {
       // }
       // this.slides[this.slideIndex] = res_slides[0]
 
-      return update_slides(update_slides_requset).then((response) => {
+      return update_slides(update_slides_request).then((response) => {
         console.log('response:', JSON.stringify(response, null, 2))
         const data = JSON.parse(JSON.stringify(response, null, 2))['data'] as string
         if (data) {
