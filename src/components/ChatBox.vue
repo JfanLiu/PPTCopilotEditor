@@ -107,7 +107,11 @@ export default defineComponent({
         //   loading.value = false
         //   loadingInstance.close()
         // })
-        slidesStore.request_update_style(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        // slidesStore.request_update_style(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        //   loading.value = false
+        //   loadingInstance.close()
+        // })
+        slidesStore.request_insert_text(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
           loading.value = false
           loadingInstance.close()
         })

@@ -5,12 +5,14 @@ import { Slide, SlideTheme, PPTElement, PPTAnimation, PPTTextElement } from '@/t
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
-import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles } from '@/api/ppt_Request_gpt'
+import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles, InsertTextRequest, insert_text } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
+import useCreateElement, {CommonElementPosition} from '@/hooks/useCreateElement'
 
 const { convert_slide_to_dom, convert_slides_to_dom } = useSlide2Dom()
 const { update_xml_to_dom_to_slide } = useXml2Slide()
+const {createTextElement} = useCreateElement()
 
 interface RemoveElementPropData {
   id: string
@@ -172,9 +174,9 @@ export const useSlidesStore = defineStore('slides', {
     updateElement(data: UpdateElementData) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
-      // console.log('this.slides')
-      // console.log(this.slides[this.slideIndex])
-      // console.log(this.slides[this.slideIndex].elements)
+      console.log('this.slides')
+      console.log(this.slides[this.slideIndex])
+      console.log(this.slides[this.slideIndex].elements)
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map(el => {
@@ -276,7 +278,7 @@ export const useSlidesStore = defineStore('slides', {
         console.log(elements[j].type)
         if (elements[j].type === 'text') {
           const textElement = elements[j] as PPTTextElement
-          // console.log(JSON.stringify(textElement))
+          console.log(JSON.stringify(textElement))
           const slideElement = { id: textElement.id, content: textElement.content }
           update_style_requset.slide.push(slideElement)
         }
@@ -304,7 +306,58 @@ export const useSlidesStore = defineStore('slides', {
       }).catch(error => {
         console.error('An error occurred:', error)
       })
-    }
+    },
 
+    request_insert_text(prompt: string) {
+      // addElement(element: PPTElement | PPTElement[])
+      const insert_requset: InsertTextRequest = {
+        'prompt': '',
+        'textnow': [],
+      }
+      insert_requset['prompt'] = prompt
+      const target_slides = this.slides[this.slideIndex]
+      const elements = target_slides.elements // 引用传值
+
+      console.log('slides.ts中的request_insert_text')
+
+      for (let j = 0; j < elements.length; j++) {
+        console.log(elements[j].type)
+        if (elements[j].type === 'text') {
+          const textElement = elements[j] as PPTTextElement
+          console.log(JSON.stringify(textElement))
+          const slideElement = { top: textElement.top, left: textElement.left, 
+            width: textElement.width, height: textElement.height, 
+            rotate: textElement.rotate, content: textElement.content}
+          insert_requset.textnow.push(slideElement)
+        }
+
+      }
+      console.log(insert_requset.textnow)
+
+      return insert_text(insert_requset).then((response) => {
+        console.log(response)
+        const data = JSON.parse(JSON.stringify(response, null, 2))['data']
+        console.log(data)
+
+        // 现在 jsonArray 是一个包含了多个对象的数组，你可以通过遍历访问每个对象的属性
+        data.forEach((item:{top: number, left: number, width:number, height:number, rotate:number, content: string}) => {
+          console.log('Content:', item.content)
+
+          const pos: CommonElementPosition = {
+            top: item.top,
+            left: item.left, 
+            width: item.width, 
+            height: item.height
+          }
+          const data = {
+            content: item.content
+          }
+          createTextElement(pos, data)
+        })
+
+      }).catch(error => {
+        console.error('An error occurred:', error)
+      })
+    }
   },
 })

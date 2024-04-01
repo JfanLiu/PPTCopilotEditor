@@ -9,7 +9,7 @@ import { LinePoolItem } from '@/configs/lines'
 import { CHART_TYPES } from '@/configs/chartTypes'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 
-interface CommonElementPosition {
+export interface CommonElementPosition {
   top: number
   left: number
   width: number
