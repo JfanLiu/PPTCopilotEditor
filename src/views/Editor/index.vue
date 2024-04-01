@@ -91,6 +91,9 @@ if (window.self !== window.top) {
   // 在 iframe 中加载的情况下，添加消息监听器
   window.addEventListener('message', function(event) {
     // 检查消息来源
+    console.log('收message')
+    console.log(event.origin)
+    console.log(my_ipConfig.projectUrl)
     if (event.origin !== my_ipConfig.projectUrl) return
     // const loadingInstance = ElLoading.service({
     //   lock: true,
@@ -101,6 +104,7 @@ if (window.self !== window.top) {
     // 输出或处理接收到的消息
     const data: string = event.data // 虽然定义成string，实际会被自动转为json obj
     console.log(typeof data)
+    console.log(data)
     const blob = new Blob([encrypt(JSON.stringify(data))], { type: '*' })
     console.log('7777 length: ', data.length)
     // 将 Blob 对象转换为 File 对象
@@ -111,6 +115,7 @@ if (window.self !== window.top) {
     dataTransfer.items.add(file)
     // 从 DataTransfer 对象获取 FileList 对象
     const fileList = dataTransfer.files
+    console.log(fileList)
     importSpecificFile(fileList, true)
     loadingInstance.close()
   }, false) 

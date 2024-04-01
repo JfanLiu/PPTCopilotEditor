@@ -27,6 +27,8 @@ export default () => {
     reader.addEventListener('load', () => {
       try {
         const slides = JSON.parse(decrypt(reader.result as string))
+        console.log('import pptist')
+        console.log(slides)
         if (cover) slidesStore.setSlides(slides)
         else addSlidesFromData(slides)
       }

@@ -56,8 +56,8 @@ export default () => {
           while (child) {
 
             if (child.nodeType === Node.ELEMENT_NODE) {
-
-              // console.log(child.nodeType, child.textContent, child instanceof Element)
+              console.log('child_node')
+              console.log(child.nodeType, child.textContent, child instanceof Element)
               const p = child as Element
               const element_id = p.getAttribute('id')
               // 找到内存中的幻灯片中的对应id的元素

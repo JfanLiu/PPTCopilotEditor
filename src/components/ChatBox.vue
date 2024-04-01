@@ -131,7 +131,11 @@ export default defineComponent({
         loading.value = true
         const loadingInstance = ElLoading.service(loadingConfig)
 
-        slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        // slidesStore.request_update_slides(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
+        //   loading.value = false
+        //   loadingInstance.close()
+        // })
+        slidesStore.request_update_style(chatHistory.value[chatHistory.value.length - 1].content).then(() => {
           loading.value = false
           loadingInstance.close()
         })
