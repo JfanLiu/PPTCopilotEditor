@@ -1,3 +1,4 @@
+import { ElementTypes } from '@/types/slides'
 import axios from '@/utils/axiosRequest'
 
 export interface UpdateSlidesRequest {
