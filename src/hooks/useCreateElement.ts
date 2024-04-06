@@ -52,8 +52,6 @@ export default () => {
    * @param src 图片地址
    */
   const createImageElement = (src: string) => {
-    console.log('adc')
-    console.log(src)
     getImageSize(src).then(({ width, height }) => {
       const scale = height / width
   

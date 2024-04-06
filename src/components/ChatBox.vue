@@ -49,6 +49,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { ElInput, ElButton, ElCard, ElScrollbar, ElTag, ElLoading, ElPopover } from 'element-plus'
 import { useSlidesStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import useCreateElement from '@/hooks/useCreateElement'
 
 enum sender_t {
   AGENT = 0,
@@ -143,7 +144,10 @@ export default defineComponent({
     //   // 拉到聊天框底部
     //   scrollToBottom()
     // }
-
+    const {
+      createImageElement,
+    } = useCreateElement()
+    
     const submitMessage = async () => {
       // 加载时禁止发送信息
       if (loading.value) {
@@ -211,10 +215,16 @@ export default defineComponent({
           //   loading.value = false
           //   loadingInstance.close()
           // })
-          slidesStore.request_update_style(prompt).then(() => {
+          // slidesStore.request_update_style(prompt).then(() => {
+          //   loading.value = false
+          //   loadingInstance.close()
+          // })
+
+          slidesStore.request_insert_text(prompt).then(() => {
             loading.value = false
             loadingInstance.close()
           })
+
           // slidesStore.request_add_image(prompt).then((response_images: void | object | undefined) => {
           //   images.value = typeof response_images === 'object' ? response_images : []
           //   loading.value = false
@@ -238,7 +248,8 @@ export default defineComponent({
     }
 
     const addImage = (image_url: string) => {
-      console.log('成功添加图片：' + image_url)
+      console.log('成功添加图片')
+      createImageElement(image_url)
     }
 
     const scrollToBottom = () => {
