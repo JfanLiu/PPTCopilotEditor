@@ -85,14 +85,14 @@ export default defineComponent({
       background: 'rgba(255, 255, 255, 0.5)'
     }
 
-    const imgBoxOpen = ref(true)
+    const imgBoxOpen = ref(false)
     const images = ref([
-      'aa.png',
-      'bb.png',
-      'cc.png',
-      'dd.png',
-      'ee.png',
-      'ff.png',
+      // 'aa.png',
+      // 'bb.png',
+      // 'cc.png',
+      // 'dd.png',
+      // 'ee.png',
+      // 'ff.png',
     ])
 
     const chatHistory = ref<ChatHistoryItem[]>([])
