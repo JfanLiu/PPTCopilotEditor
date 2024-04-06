@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { nanoid } from 'nanoid'
 import tinycolor from 'tinycolor2'
 import { omit } from 'lodash'
 import { Slide, SlideTheme, PPTElement, PPTAnimation, PPTTextElement } from '@/types/slides'
@@ -8,12 +9,11 @@ import { layouts } from '@/mocks/layout'
 import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles, InsertTextRequest, insert_text } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
-import useCreateElement, {CommonElementPosition} from '@/hooks/useCreateElement'
+// import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+// const { addHistorySnapshot } = useHistorySnapshot()
 
 const { convert_slide_to_dom, convert_slides_to_dom } = useSlide2Dom()
 const { update_xml_to_dom_to_slide } = useXml2Slide()
-const {createTextElement} = useCreateElement()
-
 interface RemoveElementPropData {
   id: string
   propName: string | string[]
@@ -174,9 +174,9 @@ export const useSlidesStore = defineStore('slides', {
     updateElement(data: UpdateElementData) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
-      console.log('this.slides')
-      console.log(this.slides[this.slideIndex])
-      console.log(this.slides[this.slideIndex].elements)
+      // console.log('this.slides')
+      // console.log(this.slides[this.slideIndex])
+      // console.log(this.slides[this.slideIndex].elements)
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map(el => {
@@ -309,7 +309,6 @@ export const useSlidesStore = defineStore('slides', {
     },
 
     request_insert_text(prompt: string) {
-      // addElement(element: PPTElement | PPTElement[])
       const insert_requset: InsertTextRequest = {
         'prompt': '',
         'textnow': [],
@@ -341,18 +340,22 @@ export const useSlidesStore = defineStore('slides', {
 
         // 现在 jsonArray 是一个包含了多个对象的数组，你可以通过遍历访问每个对象的属性
         data.forEach((item:{top: number, left: number, width:number, height:number, rotate:number, content: string}) => {
-          console.log('Content:', item.content)
-
-          const pos: CommonElementPosition = {
-            top: item.top,
+          console.log('return_text:', item)
+          const id = nanoid(10)
+          this.addElement({
+            type: 'text',
+            id,
             left: item.left, 
+            top: item.top, 
             width: item.width, 
-            height: item.height
-          }
-          const data = {
-            content: item.content
-          }
-          createTextElement(pos, data)
+            height: item.height,
+            content: item.content,
+            rotate: 0,
+            defaultFontName: theme.fontName,
+            defaultColor: theme.fontColor,
+            vertical: false,
+          })
+          // addHistorySnapshot()
         })
 
       }).catch(error => {

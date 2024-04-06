@@ -24,7 +24,7 @@ export const update_styles = (params: UpdateStyleRequest) => {
 }
 
 export const insert_text = (params: InsertTextRequest) => {
-  return axios.post<object>('/agent/insert_text', params)
+  return axios.post<object>('/agent/add_text', params)
 }
 
 export const guide_slide = (params: object) => {

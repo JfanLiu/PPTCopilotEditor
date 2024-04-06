@@ -30,6 +30,10 @@ import {defineComponent, ref, onMounted} from 'vue'
 import {ElInput, ElButton, ElCard, ElScrollbar, ElTag, ElLoading} from 'element-plus'
 import {useSlidesStore} from '@/store'
 import {storeToRefs} from 'pinia'
+import useCreateElement from '@/hooks/useCreateElement'
+
+// const createImageElement = useCreateElement().createImageElement
+
 
 interface ChatHistoryItem {
   time: string;
@@ -54,17 +58,6 @@ export default defineComponent({
   },
   setup(props) {
     const loading = ref(false)
-    // const svg = `
-    //     <path class="path" d="
-    //       M 30 15
-    //       L 28 17
-    //       M 25.61 25.61
-    //       A 15 15, 0, 0, 1, 15 30
-    //       A 15 15, 0, 1, 1, 27.99 7.5
-    //       L 15 15
-    //     " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-    //   `
-
     const chatHistory = ref<ChatHistoryItem[]>([])
     const message = ref('')
 
@@ -133,7 +126,8 @@ export default defineComponent({
     return {
       chatHistory,
       message,
-      submitMessage
+      submitMessage,
+      // createImageElement
     }
   },
 })

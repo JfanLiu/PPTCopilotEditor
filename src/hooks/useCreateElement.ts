@@ -9,7 +9,7 @@ import { LinePoolItem } from '@/configs/lines'
 import { CHART_TYPES } from '@/configs/chartTypes'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 
-export interface CommonElementPosition {
+interface CommonElementPosition {
   top: number
   left: number
   width: number
@@ -52,6 +52,8 @@ export default () => {
    * @param src 图片地址
    */
   const createImageElement = (src: string) => {
+    console.log('adc')
+    console.log(src)
     getImageSize(src).then(({ width, height }) => {
       const scale = height / width
   

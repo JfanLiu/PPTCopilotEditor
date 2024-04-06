@@ -173,7 +173,11 @@ const {
 const insertImageElement = (files: FileList) => {
   const imageFile = files[0]
   if (!imageFile) return
-  getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+  getImageDataURL(imageFile).then(dataURL => {
+    console.log('imgURL')
+    console.log(dataURL)
+    createImageElement(dataURL)
+  })
 }
 
 const shapePoolVisible = ref(false)
