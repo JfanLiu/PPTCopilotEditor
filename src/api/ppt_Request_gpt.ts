@@ -1,3 +1,4 @@
+import { ElementTypes } from '@/types/slides'
 import axios from '@/utils/axiosRequest'
 
 export interface UpdateSlidesRequest {
@@ -10,6 +11,9 @@ export interface UpdateStyleRequest {
   'slide': { id: string, content: string }[],
 }
 
+export interface AddImageRequest {
+  'keyword': string,
+}
 export interface InsertTextRequest {
   'prompt': string,
   'textnow': {top: number, left: number, width:number, height:number, rotate:number, content: string}[],
@@ -25,6 +29,10 @@ export const update_styles = (params: UpdateStyleRequest) => {
 
 export const insert_text = (params: InsertTextRequest) => {
   return axios.post<object>('/agent/add_text', params)
+}
+
+export const add_images = (params: AddImageRequest) => {
+  return axios.post<object>('/agent/get_image', params)
 }
 
 export const guide_slide = (params: object) => {

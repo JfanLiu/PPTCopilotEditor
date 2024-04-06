@@ -6,11 +6,10 @@ import { Slide, SlideTheme, PPTElement, PPTAnimation, PPTTextElement } from '@/t
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
-import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles, InsertTextRequest, insert_text } from '@/api/ppt_Request_gpt'
+import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, AddImageRequest, update_styles, add_images, InsertTextRequest, insert_text } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
-// import useHistorySnapshot from '@/hooks/useHistorySnapshot'
-// const { addHistorySnapshot } = useHistorySnapshot()
+import axiosRequest from '@/utils/axiosRequest'
 
 const { convert_slide_to_dom, convert_slides_to_dom } = useSlide2Dom()
 const { update_xml_to_dom_to_slide } = useXml2Slide()
@@ -197,13 +196,20 @@ export const useSlidesStore = defineStore('slides', {
       this.slides[slideIndex].elements = (elements as PPTElement[])
     },
 
+    // request_workflow(prompt: string) {
+    //   const a = 1
+    // },
+
+    // request_task(task: object) {
+    //   const a = 1
+    // },
 
     request_update_slides(prompt: string) {
-      const update_slides_requset: UpdateSlidesRequest = {
+      const update_slides_request: UpdateSlidesRequest = {
         'prompt': '',
         'slide': '',
       }
-      update_slides_requset['prompt'] = prompt
+      update_slides_request['prompt'] = prompt
 
       const target_slides = this.slides[this.slideIndex]
 
@@ -211,7 +217,7 @@ export const useSlidesStore = defineStore('slides', {
       const dom_top = convert_slide_to_dom(target_slides)
       console.log('显示Slide')
       console.log(target_slides)
-      update_slides_requset['slide'] = dom_top.outerHTML
+      update_slides_request['slide'] = dom_top.outerHTML
 
       let receive_xml = `
       <slides>
@@ -222,7 +228,7 @@ export const useSlidesStore = defineStore('slides', {
       </slides>
 `
       console.log('要修改的页面和命令：')
-      console.log(JSON.stringify(update_slides_requset, null, 2))
+      console.log(JSON.stringify(update_slides_request, null, 2))
 
       // const res_slides = update_xml_to_dom_to_slide(receive_xml, target_slides)
       // for (let i = 0; i < res_slides.length; i++) {
@@ -230,7 +236,7 @@ export const useSlidesStore = defineStore('slides', {
       // }
       // this.slides[this.slideIndex] = res_slides[0]
 
-      return update_slides(update_slides_requset).then((response) => {
+      return update_slides(update_slides_request).then((response) => {
         console.log('response:', JSON.stringify(response, null, 2))
         const data = JSON.parse(JSON.stringify(response, null, 2))['data'] as string
         if (data) {
@@ -292,7 +298,7 @@ export const useSlidesStore = defineStore('slides', {
         console.log(data)
 
         // 现在 jsonArray 是一个包含了多个对象的数组，你可以通过遍历访问每个对象的属性
-        data.forEach((item:{ id: string, content: string }) => {
+        data.forEach((item: { id: string, content: string }) => {
           console.log('ID:', item.id)
           console.log('Content:', item.content)
 
@@ -361,6 +367,33 @@ export const useSlidesStore = defineStore('slides', {
       }).catch(error => {
         console.error('An error occurred:', error)
       })
-    }
+    },
+
+    request_add_image(keyword: string) {
+      const add_image_request: AddImageRequest = {
+        'keyword': ''
+      }
+
+      add_image_request['keyword'] = keyword
+
+      console.log(add_image_request)
+
+      return add_images(add_image_request).then((response) => {
+        // mocking
+        response = {
+          'code': 0,
+          'msg': 'success',
+          'data': []
+        }
+
+        if (response.msg !== 'success') {
+          console.log('生成图片失败')
+          return []
+        }
+        return response.data
+      }).catch(error => {
+        console.error('An error occurred:', error)
+      })
+    },
   },
 })

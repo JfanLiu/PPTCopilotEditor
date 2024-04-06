@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-04-18 23:26:34
  * @FilePath: \PPTCopilot\src\hooks\useSlide2Dom.ts
  */
-import { Slide, PPTTextElement} from '@/types/slides'
+import { Slide, PPTTextElement } from '@/types/slides'
 
 export default () => {
   const convert_slide_to_dom = (slide: Slide, root_name = 'section') => {
