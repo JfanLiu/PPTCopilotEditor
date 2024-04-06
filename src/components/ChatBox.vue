@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, Ref, onMounted } from 'vue'
 import { ElInput, ElButton, ElCard, ElScrollbar, ElTag, ElLoading, ElPopover } from 'element-plus'
 import { useSlidesStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -87,7 +87,7 @@ export default defineComponent({
     }
 
     const imgBoxOpen = ref(false)
-    const images = ref([
+    const images: Ref<string[]> = ref([
       // 'aa.png',
       // 'bb.png',
       // 'cc.png',
