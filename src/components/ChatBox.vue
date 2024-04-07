@@ -21,6 +21,7 @@
             <el-scrollbar style="width: 100%;">
               <el-tag :type="message.sender_type === sender_t.AGENT ? 'success' : 'primary'"
                   class="chat-box-image-content">
+                  <!-- <span>这是我为你找到的图片</span> -->
                   <div class="chat-select-container">
                     <div v-for="image in message.content" :key="image">
                       <el-card @click="addImage(image)" shadow="hover" class="chat-select-image">
@@ -219,7 +220,12 @@ export default defineComponent({
             })
 
             console.log('here')
-
+            chatHistory.value.push({
+              sender_type: sender_t.AGENT,
+              time: currentTime,
+              content: '以下是我为你找到的图片...',
+              messageType: MessageType.TEXT
+            })
             chatHistory.value.push({
               sender_type: sender_t.AGENT,
               time: currentTime,
