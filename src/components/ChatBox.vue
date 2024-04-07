@@ -95,7 +95,7 @@ export default defineComponent({
     }
 
     const imgBoxOpen = ref(false)
-    const images: Ref<string[]> = ref([])
+    const images = ref<string[]>([])
 
     const chatHistory = ref<ChatHistoryItem[]>([])
     const message = ref('')
@@ -202,7 +202,7 @@ export default defineComponent({
           //   loadingInstance.close()
           // })
 
-          slidesStore.request_add_image(prompt).then(data => {
+          slidesStore.request_add_image(prompt).then((data: string[]) => {
             loading.value = false
             console.log(data)
             images.value = []
@@ -213,7 +213,9 @@ export default defineComponent({
                 images.value.push(res)
               })
             })
+
             console.log('here')
+
             chatHistory.value.push({
               sender_type: sender_t.AGENT,
               time: currentTime,
@@ -223,11 +225,6 @@ export default defineComponent({
             loadingInstance.close()
           })
 
-          // slidesStore.request_add_image(prompt).then((response_images: void | object | undefined) => {
-          //   images.value = typeof response_images === 'object' ? response_images : []
-          //   loading.value = false
-          //   loadingInstance.close()
-          // })
         }
 
         // 保证DOM加载完毕后再滚动到底部
