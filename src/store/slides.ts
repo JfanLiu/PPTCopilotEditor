@@ -380,16 +380,18 @@ export const useSlidesStore = defineStore('slides', {
 
       return add_images(add_image_request).then((response) => {
         // mocking
-        response = {
-          'code': 0,
-          'msg': 'success',
-          'data': []
-        }
+        // response = {
+        //   'code': 0,
+        //   'msg': 'success',
+        //   'data': []
+        // }
+        console.log(response)
 
-        if (response.msg !== 'success') {
+        if (response.code !== 0) {
           console.log('生成图片失败')
           return []
         }
+        console.log(response)
         return response.data
       }).catch(error => {
         console.error('An error occurred:', error)
