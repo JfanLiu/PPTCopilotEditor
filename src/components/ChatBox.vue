@@ -6,7 +6,7 @@
         <div class="chat-box-message" v-for="(message, index) in chatHistory" :key="index">
           <template v-if="message.messageType === MessageType.TEXT">
             <!-- 普通消息 -->
-            <div :class="{ 'latest-message': index === (chatHistory.length - 1) && message.sender_type === sender_t.USER }">
+            <div :class="{ 'latest-message': index === (chatHistory.length - 1)}">
               <el-tag :type="message.sender_type === sender_t.AGENT ? 'success' : 'primary'"
                 class="chat-box-message-content">
                 {{ message.content }}
@@ -189,52 +189,104 @@ export default defineComponent({
 
         }
         else {
-          // slidesStore.request_update_slides(prompt).then(() => {
-          //   loading.value = false
-          //   loadingInstance.close()
-          // })
-          // slidesStore.request_update_style(prompt).then(() => {
-          //   loading.value = false
-          //   loadingInstance.close()
-          // })
-
-          // slidesStore.request_insert_text(prompt).then(() => {
+          // slidesStore.request_add_image(prompt).then((response_images: void | object | undefined) => {
+          //   images.value = typeof response_images === 'object' ? response_images : []
+          // }).then(() => {
           //   loading.value = false
           //   loadingInstance.close()
           // })
 
-          slidesStore.request_add_image(prompt).then((data: void | string[]) => {
-            if (!data) {
-              return
-            }
-
+          slidesStore.request_gen_tasks(prompt).then((tasks: { task_name: string, prompt: string }[]) => {
             loading.value = false
-            console.log(data)
-            images.value = []
-            data?.forEach(img => {
-              console.log(img)
-              urlToBase64(img).then((res: string) => {
-                console.log(res)
-                images.value.push(res)
-              })
-            })
-
-            console.log('here')
-            chatHistory.value.push({
-              sender_type: sender_t.AGENT,
-              time: currentTime,
-              content: '以下是我为你找到的图片...',
-              messageType: MessageType.TEXT
-            })
-            chatHistory.value.push({
-              sender_type: sender_t.AGENT,
-              time: currentTime,
-              content: images.value,
-              messageType: MessageType.IMAGE_SELECTOR
-            })
             loadingInstance.close()
-          })
 
+            return tasks
+          }).then(async (tasks: { task_name: string, prompt: string }[]) => {
+            // 遍历任务序列
+            for (const task of tasks) {
+              console.log(task.task_name)
+              console.log(task.prompt)
+              const currentTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+              chatHistory.value.push({
+                sender_type: sender_t.AGENT,
+                time: currentTime,
+                content: task.prompt,
+                messageType: MessageType.TEXT
+              })
+
+              // 保证更新DOM后再添加动画
+              await Promise.resolve()
+
+              // 开启加载动画
+              loading.value = true
+              const loadingInstance = ElLoading.service(loadingConfig)
+
+              const debug = 0
+              if (debug) {
+                const finishLoading = () => {
+                  return new Promise(resolve => {
+                    setTimeout(() => {
+                      loading.value = false
+                      loadingInstance.close()
+                      resolve(1) // 执行成功后，解析 Promise
+                    }, 1000)
+                  })
+                }
+                await finishLoading() // 等待异步操作完成
+              }
+              else {
+                if (task.task_name === '文本修改') {
+                  await slidesStore.request_update_slides(prompt).then(() => {
+                    loading.value = false
+                    loadingInstance.close()
+                  })
+                }
+                else if (task.task_name === '样式修改') {
+                  await slidesStore.request_update_style(prompt).then(() => {
+                    loading.value = false
+                    loadingInstance.close()
+                  })
+                }
+                else if (task.task_name === '添加文本框') {
+                  await slidesStore.request_insert_text(prompt).then(() => {
+                    loading.value = false
+                    loadingInstance.close()
+                  })
+                }
+                else if (task.task_name === '图片插入') {
+                  await slidesStore.request_add_image(prompt).then((data: void | string[]) => {
+                    if (!data) {
+                      return
+                    }
+                  
+                    // console.log(data)
+                    images.value = []
+                    data?.forEach(img => {
+                      // console.log(img)
+                      urlToBase64(img).then((res: string) => {
+                        console.log(res)
+                        images.value.push(res)
+                      })
+                    })
+                    // console.log('here')
+                    chatHistory.value.push({
+                      sender_type: sender_t.AGENT,
+                      time: currentTime,
+                      content: images.value,
+                      messageType: MessageType.IMAGE_SELECTOR
+                    })
+                  }).then(() => {
+                    loading.value = false
+                    loadingInstance.close()
+                  })
+                }
+                else {
+                  loading.value = false
+                  loadingInstance.close()
+                }
+              }
+            } 
+          })
         }
 
         // 保证DOM加载完毕后再滚动到底部
