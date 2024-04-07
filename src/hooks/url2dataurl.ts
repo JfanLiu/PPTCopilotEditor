@@ -2,7 +2,7 @@
 
 export default () => {
   const urlToBase64 = (url: string) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const image = new Image()
       image.onload = () => {
         const canvas = document.createElement('canvas')

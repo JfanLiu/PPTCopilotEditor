@@ -330,9 +330,11 @@ export const useSlidesStore = defineStore('slides', {
         if (elements[j].type === 'text') {
           const textElement = elements[j] as PPTTextElement
           console.log(JSON.stringify(textElement))
-          const slideElement = { top: textElement.top, left: textElement.left, 
-            width: textElement.width, height: textElement.height, 
-            rotate: textElement.rotate, content: textElement.content}
+          const slideElement = {
+            top: textElement.top, left: textElement.left,
+            width: textElement.width, height: textElement.height,
+            rotate: textElement.rotate, content: textElement.content
+          }
           insert_requset.textnow.push(slideElement)
         }
 
@@ -345,15 +347,15 @@ export const useSlidesStore = defineStore('slides', {
         console.log(data)
 
         // 现在 jsonArray 是一个包含了多个对象的数组，你可以通过遍历访问每个对象的属性
-        data.forEach((item:{top: number, left: number, width:number, height:number, rotate:number, content: string}) => {
+        data.forEach((item: { top: number, left: number, width: number, height: number, rotate: number, content: string }) => {
           console.log('return_text:', item)
           const id = nanoid(10)
           this.addElement({
             type: 'text',
             id,
-            left: item.left, 
-            top: item.top, 
-            width: item.width, 
+            left: item.left,
+            top: item.top,
+            width: item.width,
             height: item.height,
             content: item.content,
             rotate: 0,
@@ -392,7 +394,7 @@ export const useSlidesStore = defineStore('slides', {
           return []
         }
         console.log(response)
-        return response.data
+        return response.data as string[]
       }).catch(error => {
         console.error('An error occurred:', error)
       })

@@ -95,7 +95,7 @@ export default defineComponent({
     }
 
     const imgBoxOpen = ref(false)
-    const images: Ref<string[]> = ref([])
+    const images = ref<string[]>([])
 
     const chatHistory = ref<ChatHistoryItem[]>([])
     const message = ref('')
@@ -175,7 +175,7 @@ export default defineComponent({
           urlToBase64(url).then(res => {
             // 转化后的base64图片地址
             console.log('base64', res)
-            images.value[0] = res
+            images.value[0] = res as string
           })
 
           console.log('here')
@@ -202,13 +202,17 @@ export default defineComponent({
           //   loadingInstance.close()
           // })
 
-          slidesStore.request_add_image(prompt).then(data => {
+          slidesStore.request_add_image(prompt).then((data: void | string[]) => {
+            if (!data) {
+              return
+            }
+
             loading.value = false
             console.log(data)
             images.value = []
-            data.forEach(img => {
+            data?.forEach(img => {
               console.log(img)
-              urlToBase64(img).then(res => {
+              urlToBase64(img).then((res: string) => {
                 console.log(res)
                 images.value.push(res)
               })
