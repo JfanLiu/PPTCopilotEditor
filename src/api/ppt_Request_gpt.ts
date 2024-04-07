@@ -16,7 +16,12 @@ export interface AddImageRequest {
 }
 export interface InsertTextRequest {
   'prompt': string,
-  'textnow': {top: number, left: number, width:number, height:number, rotate:number, content: string}[],
+  'textnow': { top: number, left: number, width: number, height: number, rotate: number, content: string }[],
+}
+
+export interface GenTasksRequest {
+  'slide': string,
+  'prompt': string,
 }
 
 export const update_slides = (params: UpdateSlidesRequest) => {
@@ -37,4 +42,8 @@ export const add_images = (params: AddImageRequest) => {
 
 export const guide_slide = (params: object) => {
   return axios.post<object>('/gpt/guide_slide', params)
+}
+
+export const gen_tasks = (params: GenTasksRequest) => {
+  return axios.post<object>('/agent/gen_tasks', params)
 }

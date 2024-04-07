@@ -6,7 +6,7 @@ import { Slide, SlideTheme, PPTElement, PPTAnimation, PPTTextElement } from '@/t
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
-import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, AddImageRequest, update_styles, add_images, InsertTextRequest, insert_text } from '@/api/ppt_Request_gpt'
+import { update_slides, UpdateSlidesRequest, UpdateStyleRequest, update_styles, AddImageRequest, add_images, InsertTextRequest, insert_text, GenTasksRequest, gen_tasks } from '@/api/ppt_Request_gpt'
 import useSlide2Dom from '@/hooks/useSlide2Dom'
 import useXml2Slide from '@/hooks/useXml2Slide'
 import axiosRequest from '@/utils/axiosRequest'
@@ -196,9 +196,24 @@ export const useSlidesStore = defineStore('slides', {
       this.slides[slideIndex].elements = (elements as PPTElement[])
     },
 
-    // request_workflow(prompt: string) {
-    //   const a = 1
-    // },
+    request_gen_tasks(prompt: string) {
+      const gen_tasks_request: GenTasksRequest = {
+        'slide': '',
+        'prompt': '',
+      }
+
+      gen_tasks_request['prompt'] = prompt
+      const target_slides = this.slides[this.slideIndex]
+
+      const dom_top = convert_slide_to_dom(target_slides)
+      gen_tasks_request['slide'] = dom_top.outerHTML
+
+      return gen_tasks(gen_tasks_request).then((response) => {
+        // console.log('任务请求响应')
+        // console.log(JSON.stringify(response))
+        return response.data as { task_name: string, prompt: string }[]
+      })
+    },
 
     // request_task(task: object) {
     //   const a = 1
