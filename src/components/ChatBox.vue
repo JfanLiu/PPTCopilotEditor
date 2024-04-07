@@ -18,20 +18,20 @@
           </template>
           <template v-else-if="message.messageType === MessageType.IMAGE_SELECTOR">
             <!-- 图片选择框 -->
-            <el-tag :type="message.sender_type === sender_t.AGENT ? 'success' : 'primary'"
-                class="chat-box-image-content">
-              <el-scrollbar>
-                <div class="chat-select-container">
-                  <div v-for="image in message.content" :key="image">
-                    <el-card @click="addImage(image)" shadow="hover" class="chat-select-image">
-                      <div class="chat-image-container">
-                        <img :src="image" alt="">
-                      </div>
-                    </el-card>
+            <el-scrollbar style="width: 100%;">
+              <el-tag :type="message.sender_type === sender_t.AGENT ? 'success' : 'primary'"
+                  class="chat-box-image-content">
+                  <div class="chat-select-container">
+                    <div v-for="image in message.content" :key="image">
+                      <el-card @click="addImage(image)" shadow="hover" class="chat-select-image">
+                        <div class="chat-image-container">
+                          <img :src="image" alt="">
+                        </div>
+                      </el-card>
+                    </div>
                   </div>
-                </div>
-              </el-scrollbar>
-            </el-tag>
+              </el-tag>
+            </el-scrollbar>
           </template>
         </div>
       </el-scrollbar>
@@ -338,7 +338,8 @@ export default defineComponent({
 
 .chat-select-container {
   display: flex;
-  max-width: 1000px;
+  /* max-width: 1000px; */
+  max-width: 100%;
 }
 
 .chat-select-image {
