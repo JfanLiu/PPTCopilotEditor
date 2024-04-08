@@ -109,31 +109,29 @@ export default defineComponent({
     } = useCreateElement()
     const { urlToBase64 } = url2dataurl()
 
-    const addTextMessage = (str: string) => {
-      return new Promise(resolve => {
-        const currentTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
-        chatHistory.value.push({
-          sender_type: sender_t.AGENT,
-          time: currentTime,
-          content: '',
-          messageType: MessageType.TEXT
-        })
-        const characters = str.split('')
-        const len = chatHistory.value.length
-        // 逐个字符添加到 chatHistory 中
-        characters.forEach(async (char, index) => {
-          await new Promise(resolve => {
-            setTimeout(() => {
-              console.log(index)
-              chatHistory.value[len - 1].content += char
-              resolve(0)
-            }, index * 100)
-          })
-          
-        })
-        scrollToBottom()
-        resolve(0)
+    const addTextMessage = async (str: string) => {
+      const currentTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      chatHistory.value.push({
+        sender_type: sender_t.AGENT,
+        time: currentTime,
+        content: '',
+        messageType: MessageType.TEXT
       })
+      const characters = str.split('')
+      const len = chatHistory.value.length
+      // 逐个字符添加到 chatHistory 中
+      const promises = characters.map((char, index) => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            console.log(index)
+            chatHistory.value[len - 1].content += char
+            resolve(0)
+          }, index * 100)
+        })
+      })
+      // 等待所有的 setTimeout 完成
+      await Promise.all(promises)
+      scrollToBottom()
     }
 
     const submitMessage = async () => {
@@ -225,21 +223,15 @@ export default defineComponent({
             }
             gen_task += ('\n' + '下面开始执行:')
             await addTextMessage(gen_task)
-            console.log('张启翔')
+
             return tasks
           }).then(async (tasks: { task_name: string, prompt: string }[]) => {
             // 遍历任务序列
             for (const task of tasks) {
               console.log(task.task_name)
               console.log(task.prompt)
-              const currentTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
-              chatHistory.value.push({
-                sender_type: sender_t.AGENT,
-                time: currentTime,
-                content: task.prompt,
-                messageType: MessageType.TEXT
-              })
-
+              await addTextMessage(task.prompt)
+              
               await Promise.resolve()
 
               // 开启加载动画
