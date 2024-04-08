@@ -174,8 +174,6 @@ export default defineComponent({
 
           const url = 'https://ts2.cn.mm.bing.net/th?id=ORMS.f3c78f7bbccef2472af2af7e98baf1bf&pid=Wdp&w=300&h=156&qlt=90&c=1&rs=1&dpr=1.5&p=0'
           urlToBase64(url).then(res => {
-            // 转化后的base64图片地址
-            console.log('base64', res)
             images.value[0] = res as string
           })
 
@@ -189,17 +187,11 @@ export default defineComponent({
 
         }
         else {
-          // slidesStore.request_add_image(prompt).then((response_images: void | object | undefined) => {
-          //   images.value = typeof response_images === 'object' ? response_images : []
-          // }).then(() => {
-          //   loading.value = false
-          //   loadingInstance.close()
-          // })
 
           slidesStore.request_gen_tasks(prompt).then((tasks: { task_name: string, prompt: string }[]) => {
             loading.value = false
             loadingInstance.close()
-
+            console.log(tasks)
             return tasks
           }).then(async (tasks: { task_name: string, prompt: string }[]) => {
             // 遍历任务序列
@@ -214,7 +206,6 @@ export default defineComponent({
                 messageType: MessageType.TEXT
               })
 
-              // 保证更新DOM后再添加动画
               await Promise.resolve()
 
               // 开启加载动画
@@ -258,17 +249,19 @@ export default defineComponent({
                     if (!data) {
                       return
                     }
-                  
                     // console.log(data)
                     images.value = []
                     data?.forEach(img => {
-                      // console.log(img)
                       urlToBase64(img).then((res: string) => {
-                        console.log(res)
                         images.value.push(res)
                       })
                     })
-                    // console.log('here')
+                    chatHistory.value.push({
+                      sender_type: sender_t.AGENT,
+                      time: currentTime,
+                      content: '以下为搜索到的图片',
+                      messageType: MessageType.TEXT
+                    })
                     chatHistory.value.push({
                       sender_type: sender_t.AGENT,
                       time: currentTime,

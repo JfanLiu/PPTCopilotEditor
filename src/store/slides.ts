@@ -209,8 +209,8 @@ export const useSlidesStore = defineStore('slides', {
       gen_tasks_request['slide'] = dom_top.outerHTML
 
       return gen_tasks(gen_tasks_request).then((response) => {
-        // console.log('任务请求响应')
-        // console.log(JSON.stringify(response))
+        console.log('任务请求响应')
+        console.log(JSON.stringify(response))
         return response.data as { task_name: string, prompt: string }[]
       })
     },
