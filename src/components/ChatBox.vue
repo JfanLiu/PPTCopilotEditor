@@ -231,7 +231,7 @@ export default defineComponent({
               console.log(task.task_name)
               console.log(task.prompt)
               await addTextMessage(task.prompt)
-              
+
               await Promise.resolve()
 
               // 开启加载动画
@@ -271,7 +271,7 @@ export default defineComponent({
                   })
                 }
                 else if (task.task_name === '图片插入') {
-                  await slidesStore.request_add_image(task.prompt).then((data: void | string[]) => {
+                  await slidesStore.request_add_image(task.prompt).then(async (data: void | string[]) => {
                     if (!data) {
                       return
                     }
@@ -282,12 +282,8 @@ export default defineComponent({
                         images.value.push(res)
                       })
                     })
-                    chatHistory.value.push({
-                      sender_type: sender_t.AGENT,
-                      time: currentTime,
-                      content: '以下为搜索到的图片',
-                      messageType: MessageType.TEXT
-                    })
+
+                    await addTextMessage('以下为搜索到的图片')
                     chatHistory.value.push({
                       sender_type: sender_t.AGENT,
                       time: currentTime,
