@@ -109,6 +109,33 @@ export default defineComponent({
     } = useCreateElement()
     const { urlToBase64 } = url2dataurl()
 
+    const addTextMessage = (str: string) => {
+      return new Promise(resolve => {
+        const currentTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        chatHistory.value.push({
+          sender_type: sender_t.AGENT,
+          time: currentTime,
+          content: '',
+          messageType: MessageType.TEXT
+        })
+        const characters = str.split('')
+        const len = chatHistory.value.length
+        // 逐个字符添加到 chatHistory 中
+        characters.forEach(async (char, index) => {
+          await new Promise(resolve => {
+            setTimeout(() => {
+              console.log(index)
+              chatHistory.value[len - 1].content += char
+              resolve(0)
+            }, index * 100)
+          })
+          
+        })
+        scrollToBottom()
+        resolve(0)
+      })
+    }
+
     const submitMessage = async () => {
       // 加载时禁止发送信息
       if (loading.value) {
@@ -188,10 +215,17 @@ export default defineComponent({
         }
         else {
 
-          slidesStore.request_gen_tasks(prompt).then((tasks: { task_name: string, prompt: string }[]) => {
+          slidesStore.request_gen_tasks(prompt).then(async (tasks: { task_name: string, prompt: string }[]) => {
             loading.value = false
             loadingInstance.close()
             console.log(tasks)
+            let gen_task = '根据您的描述生成了以下任务:'
+            for (const task of tasks) {
+              gen_task += ('\n' + task.task_name + ':' + task.prompt)
+            }
+            gen_task += ('\n' + '下面开始执行:')
+            await addTextMessage(gen_task)
+            console.log('张启翔')
             return tasks
           }).then(async (tasks: { task_name: string, prompt: string }[]) => {
             // 遍历任务序列
@@ -227,25 +261,25 @@ export default defineComponent({
               }
               else {
                 if (task.task_name === '文本修改') {
-                  await slidesStore.request_update_slides(prompt).then(() => {
+                  await slidesStore.request_update_slides(task.prompt).then(() => {
                     loading.value = false
                     loadingInstance.close()
                   })
                 }
                 else if (task.task_name === '样式修改') {
-                  await slidesStore.request_update_style(prompt).then(() => {
+                  await slidesStore.request_update_style(task.prompt).then(() => {
                     loading.value = false
                     loadingInstance.close()
                   })
                 }
                 else if (task.task_name === '添加文本框') {
-                  await slidesStore.request_insert_text(prompt).then(() => {
+                  await slidesStore.request_insert_text(task.prompt).then(() => {
                     loading.value = false
                     loadingInstance.close()
                   })
                 }
                 else if (task.task_name === '图片插入') {
-                  await slidesStore.request_add_image(prompt).then((data: void | string[]) => {
+                  await slidesStore.request_add_image(task.prompt).then((data: void | string[]) => {
                     if (!data) {
                       return
                     }
