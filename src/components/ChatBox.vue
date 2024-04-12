@@ -123,7 +123,6 @@ export default defineComponent({
       const promises = characters.map((char, index) => {
         return new Promise(resolve => {
           setTimeout(() => {
-            console.log(index)
             chatHistory.value[len - 1].content += char
             resolve(0)
           }, index * 100)
