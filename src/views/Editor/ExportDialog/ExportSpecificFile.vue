@@ -36,6 +36,15 @@
       <Button class="btn close" @click="emit('close')">关闭</Button>
     </div>
   </div>
+  <div class="thumbnails" ref="imageThumbnailsRef">
+    <ThumbnailSlide 
+      class="thumbnail" 
+      v-for="slide in renderSlides" 
+      :key="slide.id" 
+      :slide="slide" 
+      :size="1600" 
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -43,6 +52,9 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import useExport from '@/hooks/useExport'
+const { slides, currentSlide } = storeToRefs(useSlidesStore())
+
+import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 
 import {
   Button,
@@ -55,7 +67,6 @@ const emit = defineEmits<{
   (event: 'close'): void
 }>()
 
-const { slides, currentSlide } = storeToRefs(useSlidesStore())
 
 const { saveToCloud } = useExport()
 
@@ -74,6 +85,7 @@ const selectedSlides = computed(() => {
 const showMessage = ref(false)
 
 const pushSaveBtnHandler = () => {
+  expImageCover()
   console.log(selectedSlides.value)
   saveToCloud(selectedSlides.value)
   showMessage.value = true
@@ -84,6 +96,23 @@ const pushSaveBtnHandler = () => {
   }, 1000)
 }
 
+const {exportImage, exportCoverImage, exporting } = useExport()
+const imageThumbnailsRef = ref<HTMLElement>()
+const renderSlides = slides.value.filter((item, index) => {
+  return index >= 0 && index <= 0
+})
+const format = 'png'
+const quality = 1
+const ignoreWebfont = true
+const expImageCover = () => {
+  console.log('我执行了吗')
+  console.log(imageThumbnailsRef.value)
+  if (!imageThumbnailsRef.value) return
+  exportCoverImage(imageThumbnailsRef.value, format, quality, ignoreWebfont)
+  // exportImage(imageThumbnailsRef.value, format, quality, ignoreWebfont)
+}
+
+console.log('chatBox')
 </script>
 
 <style lang="scss" scoped>

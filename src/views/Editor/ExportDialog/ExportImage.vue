@@ -114,12 +114,22 @@ const renderSlides = computed(() => {
   })
 })
 
-const { exportImage, exporting } = useExport()
+const { exportImage, exportCoverImage, exporting } = useExport()
 
 const expImage = () => {
   if (!imageThumbnailsRef.value) return
   exportImage(imageThumbnailsRef.value, format.value, quality.value, ignoreWebfont.value)
 }
+
+const expCover = () => {
+  rangeType.value = 'custom'
+  range.value = [1, 1]
+  if (!imageThumbnailsRef.value) return
+  exportCoverImage(imageThumbnailsRef.value, format.value, quality.value, ignoreWebfont.value)
+  rangeType.value = 'all'
+  range.value = [1, slides.value.length]
+}
+console.log('exportImage被渲染')
 </script>
 
 <style lang="scss" scoped>

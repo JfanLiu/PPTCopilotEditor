@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
@@ -45,6 +45,33 @@ import { Slide } from '@/types/slides'
 import useGenPPTByOutline from '@/hooks/useGenPPTByOutline'
 import RequestHttp from '@/utils/axiosRequest'
 import { guide_slide } from '@/api/ppt_Request_gpt'
+
+
+// import useExport from '@/hooks/useExport'
+// const { exportImage, exportCoverImage, exporting } = useExport()
+// const { slides, currentSlide } = storeToRefs(useSlidesStore())
+// const imageThumbnailsRef = ref<HTMLElement>()
+// const renderSlides = slides.value.filter((item, index) => {
+//   return index >= 0 && index <= slides.value.length - 1
+// })
+
+// const format = 'png'
+// const quality = 1
+// const ignoreWebfont = true
+
+// const expImage = () => {
+//   console.log('我执行了吗')
+//   console.log(imageThumbnailsRef.value)
+//   if (!imageThumbnailsRef.value) return
+//   exportImage(imageThumbnailsRef.value, format, quality, ignoreWebfont)
+// }
+
+// onMounted(() => {
+//   // 在组件挂载到 DOM 后执行的逻辑
+//   console.log('组件已经挂载到 DOM')
+//   expImage()
+// })
+
 // const loadingInstance0 = ElLoading.service({
 //   text: '正在启动PPT编辑系统...',
 //   spinner: 'el-icon-loading',
@@ -91,9 +118,6 @@ if (window.self !== window.top) {
   // 在 iframe 中加载的情况下，添加消息监听器
   window.addEventListener('message', function(event) {
     // // 检查消息来源
-    // console.log('收message')
-    // console.log(event.origin)
-    // console.log(my_ipConfig.projectUrl)
     if (event.origin !== my_ipConfig.projectUrl) return
 
     const data: string = event.data // 虽然定义成string，实际会被自动转为json obj
@@ -123,6 +147,7 @@ else {
 </script>
 
 <style lang="scss" scoped>
+
 .pptist-editor {
   height: 100%;
 }
