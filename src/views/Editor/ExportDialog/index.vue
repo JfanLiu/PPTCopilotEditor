@@ -27,6 +27,8 @@ import ExportPDF from './ExportPDF.vue'
 import ExportPPTX from './ExportPPTX.vue'
 import SaveToCloud from './ExportSpecificFile.vue'
 
+console.log('ExportDialog]被渲染')
+
 interface TabItem {
   key: DialogForExportTypes
   label: string

@@ -13,14 +13,16 @@
                       @input="$event => handleInput($event)"></textarea>
             <button @click="commitInput">提交</button>
         </div>
+
     </div>
 </template>
 
 <script lang="ts" setup>
-import {computed, ref} from 'vue'
+import {computed, ref, onMounted} from 'vue'
 import {storeToRefs} from 'pinia'
 import {useSlidesStore} from '@/store'
 import ChatBox from '@/components/ChatBox.vue'
+
 
 const history_ls = ref<string[]>([])
 

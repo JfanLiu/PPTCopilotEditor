@@ -13,7 +13,7 @@ import { SvgPoints, toPoints } from '@/utils/svgPathParser'
 import { encrypt } from '@/utils/crypto'
 import { svg2Base64 } from '@/utils/svg2Base64'
 import { message } from 'ant-design-vue'
-import {my_ipConfig} from '../ipconfig' 
+import { my_ipConfig } from '../ipconfig' 
 
 const INCH_PX_RATIO = 100
 const PT_PX_RATIO = 0.75
@@ -48,6 +48,7 @@ export default () => {
 
       toImage(domRef, config).then(dataUrl => {
         exporting.value = false
+        console.log(dataUrl)
         saveAs(dataUrl, `pptist_slides.${format}`)
       }).catch(() => {
         exporting.value = false
@@ -56,12 +57,45 @@ export default () => {
     }, 200)
   }
 
+  const exportCoverImage = (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true) => {
+    exporting.value = true
+    const toImage = format === 'png' ? toPng : toJpeg
+    const foreignObjectSpans = domRef.querySelectorAll('foreignObject [xmlns]')
+    foreignObjectSpans.forEach(spanRef => spanRef.removeAttribute('xmlns'))
+    setTimeout(() => {
+      const config: ExportImageConfig = {
+        quality,
+        width: 1600,
+      }
+      if (ignoreWebfont) config.fontEmbedCSS = ''
+      toImage(domRef, config).then(dataUrl => {
+        exporting.value = false
+        // console.log(dataUrl)
+        const messageData = {
+          type: 'cover', // 这里是你希望添加的类型
+          data: dataUrl // 这里是原来的数据
+        }
+        if (window.parent) {
+          window.parent.postMessage(JSON.stringify(messageData), my_ipConfig.projectUrl)
+        } 
+        else {
+          console.error('Failed to find the parent window for message posting.')
+        }
+        console.log('7777post_cover')
+      }).catch(() => {
+        exporting.value = false
+        message.error('回传cover失败')
+      })
+    }, 200)
+  }
   const saveToCloud = (_slides: Slide[]) => {
-    // window.parent.postMessage(JSON.stringify(_slides), '*')
-    // window.parent.postMessage(JSON.stringify(_slides), my_ipConfig.projectUrl)
     // 向父页面发送消息
+    const messageData = {
+      type: 'cloud', // 这里是你希望添加的类型
+      data: JSON.stringify(_slides) // 这里是原来的数据
+    }
     if (window.parent) {
-      window.parent.postMessage(JSON.stringify(_slides), my_ipConfig.projectUrl)
+      window.parent.postMessage(JSON.stringify(messageData), my_ipConfig.projectUrl)
     } 
     else {
       console.error('Failed to find the parent window for message posting.')
@@ -74,7 +108,6 @@ export default () => {
     const blob = new Blob([JSON.stringify(slides.value)], { type: '' })
     saveAs(blob, 'pptist_slides.json')
   }
-
   // 格式化颜色值为 透明度 + HexString，供pptxgenjs使用
   const formatColor = (_color: string) => {
     const c = tinycolor(_color)
@@ -85,9 +118,7 @@ export default () => {
       color,
     }
   }
-
   type FormatColor = ReturnType<typeof formatColor>
-
   // 将HTML字符串格式化为pptxgenjs所需的格式
   // 核心思路：将HTML字符串按样式分片平铺，每个片段需要继承祖先元素的样式信息，遇到块级元素需要换行
   const formatHTML = (html: string) => {
@@ -223,7 +254,6 @@ export default () => {
     parse(ast)
     return slices
   }
-
   type Points = Array<
     | { x: number; y: number; moveTo?: boolean }
     | { x: number; y: number; curve: { type: 'arc'; hR: number; wR: number; stAng: number; swAng: number } }
@@ -277,7 +307,6 @@ export default () => {
       }
     })
   }
-
   // 获取阴影配置
   const getShadowOption = (shadow: PPTElementShadow): pptxgen.ShadowProps => {
     const c = formatColor(shadow.color)
@@ -336,7 +365,6 @@ export default () => {
       angle,
     }
   }
-
   // 获取边框配置
   const getOutlineOption = (outline: PPTElementOutline): pptxgen.ShapeLineProps => {
     const c = formatColor(outline?.color || '#000000')
@@ -347,7 +375,6 @@ export default () => {
       dashType: outline.style === 'solid' ? 'solid' : 'dash',
     }
   }
-
   // 获取超链接配置
   const getLinkOption = (link: PPTElementLink): pptxgen.HyperlinkProps | null => {
     const { type, target } = link
@@ -761,10 +788,10 @@ export default () => {
       })
     }, 200)
   }
-
   return {
     exporting,
     exportImage,
+    exportCoverImage,
     exportJSON,
     saveToCloud,
     exportPPTX,

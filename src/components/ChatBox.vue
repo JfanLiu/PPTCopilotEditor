@@ -42,6 +42,7 @@
       <el-input v-model="message" placeholder="请输入对话内容" @keyup.enter="submitMessage()" clearable></el-input>
       <el-button type="primary" @click="submitMessage">发送</el-button>
     </div>
+    
   </div>
 </template>
 
