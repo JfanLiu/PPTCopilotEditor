@@ -27,9 +27,7 @@ interface ExportImageConfig {
 export default () => {
   const slidesStore = useSlidesStore()
   const { slides, theme, viewportRatio } = storeToRefs(slidesStore)
-
   const exporting = ref(false)
-
   // 导出图片
   const exportImage = (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true) => {
     exporting.value = true
@@ -56,37 +54,42 @@ export default () => {
       })
     }, 200)
   }
-
-  const exportCoverImage = (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true) => {
+  const exportCoverImage = async (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true, isCover = true) => {
     exporting.value = true
     const toImage = format === 'png' ? toPng : toJpeg
     const foreignObjectSpans = domRef.querySelectorAll('foreignObject [xmlns]')
     foreignObjectSpans.forEach(spanRef => spanRef.removeAttribute('xmlns'))
-    setTimeout(() => {
-      const config: ExportImageConfig = {
-        quality,
-        width: 1600,
-      }
-      if (ignoreWebfont) config.fontEmbedCSS = ''
-      toImage(domRef, config).then(dataUrl => {
-        exporting.value = false
-        // console.log(dataUrl)
-        const messageData = {
-          type: 'cover', // 这里是你希望添加的类型
-          data: dataUrl // 这里是原来的数据
+    await new Promise(resolve => {
+      setTimeout(() => {
+        const config: ExportImageConfig = {
+          quality,
+          width: 1600,
         }
-        if (window.parent) {
-          window.parent.postMessage(JSON.stringify(messageData), my_ipConfig.projectUrl)
-        } 
-        else {
-          console.error('Failed to find the parent window for message posting.')
-        }
-        console.log('7777post_cover')
-      }).catch(() => {
-        exporting.value = false
-        message.error('回传cover失败')
-      })
-    }, 200)
+        if (ignoreWebfont) config.fontEmbedCSS = ''
+        toImage(domRef, config).then(dataUrl => {
+          exporting.value = false
+          // console.log(dataUrl)
+          const messageData = {
+            type: 'cover', // 这里是你希望添加的类型
+            data: dataUrl // 这里是原来的数据
+          }
+          if (!isCover) {
+            messageData.type = 'content'
+          }
+          if (window.parent) {
+            window.parent.postMessage(JSON.stringify(messageData), my_ipConfig.projectUrl)
+          } 
+          else {
+            console.error('Failed to find the parent window for message posting.')
+          }
+          console.log('7777post_cover')
+          resolve(0)
+        }).catch(() => {
+          exporting.value = false
+          message.error('回传cover失败')
+        })
+      }, 200)
+    })
   }
   const saveToCloud = (_slides: Slide[]) => {
     // 向父页面发送消息
@@ -102,7 +105,6 @@ export default () => {
     }
     console.log('7777post2')
   }
-
   // 导出JSON文件
   const exportJSON = () => {
     const blob = new Blob([JSON.stringify(slides.value)], { type: '' })
@@ -148,7 +150,6 @@ export default () => {
             if (key && value) styleObj[key] = value
           }
         }
-
         if ('tagName' in item) {
           if (item.tagName === 'em') {
             styleObj['font-style'] = 'italic'
@@ -182,7 +183,6 @@ export default () => {
             }
           }
         }
-
         if ('tagName' in item && item.tagName === 'br') {
           slices.push({ text: '', options: { breakLine: true } })
         }
