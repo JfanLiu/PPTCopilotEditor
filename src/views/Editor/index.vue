@@ -95,7 +95,7 @@ const isExpanded = ref(false)
 
 const expand = async () => {
   isExpanded.value = true
-  remarkHeight.value = 20
+  remarkHeight.value = 40
   await nextTick()
   remarkHeight.value = 500
 }
@@ -103,7 +103,7 @@ const shrink = async () => {
   isExpanded.value = false
   remarkHeight.value = 500
   await nextTick()
-  remarkHeight.value = 20
+  remarkHeight.value = 40
 }
 
 useGlobalHotkey()
