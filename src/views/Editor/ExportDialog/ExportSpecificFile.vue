@@ -98,17 +98,25 @@ const pushSaveBtnHandler = () => {
 
 const {exportImage, exportCoverImage, exporting } = useExport()
 const imageThumbnailsRef = ref<HTMLElement>()
-const renderSlides = slides.value.filter((item, index) => {
-  return index >= 0 && index <= 0
+const exp_range = ref<[number, number]>([1, 1])
+const renderSlides = computed(() => {
+  console.log('computed:', exp_range.value)
+  return slides.value.filter((item, index) => {
+    const [min, max] = exp_range.value
+    return index >= min - 1 && index <= max - 1
+  })
 })
 const format = 'png'
 const quality = 1
 const ignoreWebfont = true
-const expImageCover = () => {
-  console.log('我执行了吗')
-  console.log(imageThumbnailsRef.value)
+const isCover = true
+const isContent = false
+const expImageCover = async () => {
   if (!imageThumbnailsRef.value) return
-  exportCoverImage(imageThumbnailsRef.value, format, quality, ignoreWebfont)
+  exp_range.value = [1, 1]
+  await exportCoverImage(imageThumbnailsRef.value, format, quality, ignoreWebfont, isCover)
+  exp_range.value = [1, slides.value.length]
+  exportCoverImage(imageThumbnailsRef.value, format, quality, ignoreWebfont, isContent)
   // exportImage(imageThumbnailsRef.value, format, quality, ignoreWebfont)
 }
 
