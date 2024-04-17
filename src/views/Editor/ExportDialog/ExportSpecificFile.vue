@@ -36,7 +36,7 @@
       <Button class="btn close" @click="emit('close')">关闭</Button>
     </div>
   </div>
-  <div class="thumbnails" ref="imageThumbnailsRef">
+  <div class="thumbnails" ref="imageThumbnailsRef" v-if="true">
     <ThumbnailSlide 
       class="thumbnail" 
       v-for="slide in renderSlides" 
