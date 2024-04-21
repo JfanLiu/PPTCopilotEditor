@@ -1,5 +1,16 @@
 <template>
   <div class="export-pptist-dialog">
+    <div class="thumbnails-view">
+      <div class="thumbnails" ref="imageThumbnailsRef"  >
+        <ThumbnailSlide 
+          class="thumbnail" 
+          v-for="slide in renderSlides" 
+          :key="slide.id" 
+          :slide="slide" 
+          :size="1600" 
+        />
+      </div>
+    </div>
     <div class="configs">
       <div class="row">
         <div class="title">导出范围：</div>
@@ -36,15 +47,7 @@
       <Button class="btn close" @click="emit('close')">关闭</Button>
     </div>
   </div>
-  <div class="thumbnails" ref="imageThumbnailsRef" v-if="true">
-    <ThumbnailSlide 
-      class="thumbnail" 
-      v-for="slide in renderSlides" 
-      :key="slide.id" 
-      :slide="slide" 
-      :size="1600" 
-    />
-  </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -112,6 +115,7 @@ const ignoreWebfont = true
 const isCover = true
 const isContent = false
 const expImageCover = async () => {
+  console.log('expImageCover', imageThumbnailsRef.value)
   if (!imageThumbnailsRef.value) return
   exp_range.value = [1, 1]
   await exportCoverImage(imageThumbnailsRef.value, format, quality, ignoreWebfont, isCover)
@@ -124,6 +128,15 @@ console.log('chatBox')
 </script>
 
 <style lang="scss" scoped>
+.thumbnails-view{
+  @include absolute-0();
+
+  &::after {
+    content: '';
+    background-color: #fff;
+    @include absolute-0();
+  }
+}
 .export-pptist-dialog {
   height: 100%;
   display: flex;
@@ -184,4 +197,5 @@ console.log('chatBox')
     margin-left: 10px;
   }
 }
+
 </style>
